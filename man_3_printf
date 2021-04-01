@@ -1,0 +1,114 @@
+.TH _printf 3 "26 Feb 2018" "version 1.0" "man_3_printf"
+.SH NAME
+print
+.SH SYNOPSIS
+int print(const char *format, ...);
+.SH DESCRIPTION
+An attempt to create a simple replica of the
+.B printf
+function in gcc with less functionality. Will currently only accept input \
+of
+.B char, string, int, decimal, binary.
+For more information, please refer to
+.BR man\ printf (3)
+.SS Format of format string
+The format string is a character string, beginning and ending in its
+initial shift state, if any.  The format string is composed of zero
+or more directives: ordinary characters (not
+.B %
+), which are copied
+unchanged to the output stream; and conversion specifications, each
+of which results in fetching zero or more subsequent arguments.  Each
+conversion specification is introduced by the character 
+.B %
+, and ends
+with a
+.I conversion specifier.
+In between there may be (in this order)
+zero or more
+.I flags
+, an optional minimum
+.I field width
+, an optional
+.I precision
+and an optional
+.I precision
+and an optional
+.I length modifier.
+.SS Conversion specifiers
+A character that specifies the type of conversion to be applied.  The conv\
+ersion specifiers and their meanings are:
+.IP d,\ i
+The int argument is converted to signed decimal notation.  The
+precision, if any, gives the minimum number of digits that
+must appear; if the converted value requires fewer digits, it
+is padded on the left with zeros.  The default precision is 1.
+When 0 is printed with an explicit precision 0, the output is
+empty.
+.IP c
+If no
+.B l
+modifier is present, the
+.I int
+argument is converted to
+an
+.I unsigned char
+, and the resulting character is written.  If
+an
+.B l
+modifier is present, the
+.I wint_t
+(wide character) argument
+is converted to a multibyte sequence by a call to the
+.BR wcrtomb(3)
+function, with a conversion state starting in the
+initial state, and the resulting multibyte string is written.
+.IP s
+If no
+.B l
+modifier is present: the
+.I const char *
+argument isexpected to be a pointer to an array of character type
+(pointer to a string).  Characters from the array are written
+up to (but not including) a terminating null byte ('\0'); if aprecision is\
+ specified, no more than the number specified are
+written.  If a precision is given, no null byte need bepresent; if the pre\
+cision is not specified, or is greater than
+the size of the array, the array must contain a terminating
+null byte.
+If an
+.B l
+modifier is present: the
+.I const wchar_t *
+argument is
+expected to be a pointer to an array of wide characters.  Wide
+characters from the array are converted to multibyte charac-
+ters (each by a call to the
+.BR wcrtomb(3)
+function, with a con-
+version state starting in the initial state before the first
+wide character), up to and including a terminating null wide
+character.  The resulting multibyte characters are written up
+to (but not including) the terminating null byte.  If a preci-
+sion is specified, no more bytes than the number specified are
+written, but no partial multibyte characters are written.
+Note that the precision determines the number of
+.I bytes
+written, not the number of
+.I wide characters
+or
+.I screen positions.
+The array must contain a terminating null wide character,
+unless a precision is given and it is so small that the number
+of bytes written exceeds it before the end of the array is
+reached.
+.IP b
+The unsigned int argument is converted to binary. If int argument is
+specified, it will be converted to unsigned int and then converted to
+binary.
+.SH RETURN VALUE
+Upon successful return, these functions return the number of
+characters printed (excluding the null byte used to end output to
+strings).
+.SH BUGS
+Don't ask. Don't tell. Shh....!
